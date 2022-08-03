@@ -9,6 +9,10 @@ import QuestionCard from './components/QuestionCard';
 import { Difficulty, QuestionsState } from './API';
 import { AnswerObject } from './App.d';
 
+// Styles
+import { GlobalStyle } from './App.styled';
+import * as Styled from './App.styled';
+
 const App = () => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<QuestionsState[]>([]);
@@ -55,37 +59,47 @@ const App = () => {
     }
   };
 
-  const nextQuestion = () => {};
+  const nextQuestion = () => {
+    // Move to the next question if it is not the last question
+    const nextQuestion = number + 1;
+
+    if (nextQuestion === totalQuestions) {
+      setGameOver(true);
+    } else {
+      setNumber(nextQuestion);
+    }
+  };
 
   return (
-    <div className='App'>
-      <h1>Books Quiz</h1>
-      {(gameOver || userAnswers.length === totalQuestions) && (
-        <button className='start' onClick={startQuiz}>
-          Start the Trivia Quiz
-        </button>
-      )}
-      {!gameOver && <p className='score'>Score:</p>}
-      {loading && <p>Loading Questions...</p>}
-      {!loading && !gameOver && (
-        <QuestionCard
-          questionNumber={number + 1}
-          totalQuestions={totalQuestions}
-          question={questions[number].question}
-          answers={questions[number].answers}
-          userAnswer={userAnswers ? userAnswers[number] : undefined}
-          callbackFn={checkAnswer}
-        />
-      )}
-      {!gameOver &&
-        !loading &&
-        userAnswers.length === number + 1 &&
-        number !== totalQuestions - 1 && (
-          <button className='next' onClick={nextQuestion}>
-            Next Question
-          </button>
+    <>
+      <GlobalStyle />
+      <Styled.Wrapper>
+        <Styled.Title>Books Quiz</Styled.Title>
+        {(gameOver || userAnswers.length === totalQuestions) && (
+          <Styled.Button startButton onClick={startQuiz}>
+            Start the Trivia Quiz
+          </Styled.Button>
         )}
-    </div>
+        {!gameOver && <Styled.Score>Score: {score}</Styled.Score>}
+        {loading && <p>Loading Questions...</p>}
+        {!loading && !gameOver && (
+          <QuestionCard
+            questionNumber={number + 1}
+            totalQuestions={totalQuestions}
+            question={questions[number].question}
+            answers={questions[number].answers}
+            userAnswer={userAnswers ? userAnswers[number] : undefined}
+            callbackFn={checkAnswer}
+          />
+        )}
+        {!gameOver &&
+          !loading &&
+          userAnswers.length === number + 1 &&
+          number !== totalQuestions - 1 && (
+            <Styled.Button onClick={nextQuestion}>Next Question</Styled.Button>
+          )}
+      </Styled.Wrapper>
+    </>
   );
 };
 
