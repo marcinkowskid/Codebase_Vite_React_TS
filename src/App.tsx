@@ -37,7 +37,22 @@ const App = () => {
   };
 
   const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log(e);
+    if (!gameOver) {
+      // User answer
+      const userAnswer = e.currentTarget.value;
+      // Check answer againt correct answer
+      const isCorrect = questions[number].correct_answer === userAnswer;
+      // Add score if answer is correct
+      if (isCorrect) setScore((prev) => prev + 1);
+      // Save answer in the array of user answers
+      const answerObject = {
+        question: questions[number].question,
+        answer: userAnswer,
+        correct: isCorrect,
+        correctAnswer: questions[number].correct_answer,
+      };
+      setUserAnswers((prev) => [...prev, answerObject]);
+    }
   };
 
   const nextQuestion = () => {};
@@ -62,9 +77,14 @@ const App = () => {
           callbackFn={checkAnswer}
         />
       )}
-      <button className='next' onClick={nextQuestion}>
-        Next Question
-      </button>
+      {!gameOver &&
+        !loading &&
+        userAnswers.length === number + 1 &&
+        number !== totalQuestions - 1 && (
+          <button className='next' onClick={nextQuestion}>
+            Next Question
+          </button>
+        )}
     </div>
   );
 };
